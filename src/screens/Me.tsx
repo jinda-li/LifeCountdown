@@ -33,6 +33,8 @@ export function MeScreen() {
   const resetAll = useApp((s) => s.resetAll);
   const [metricsOpen, setMetricsOpen] = useState(false);
   const [shop, setShop] = useState(false);
+  const [notifyHint, setNotifyHint] = useState("");
+  const [resetOpen, setResetOpen] = useState(false);
 
   const country = getCountry(profile.countryId);
   const life = snapshot({
@@ -44,6 +46,7 @@ export function MeScreen() {
   const days = Object.keys(journals).length;
 
   return (
+    <div className="screen">
     <div className="scroll">
       <p className="text-[13px] tracking-[0.16em] text-[var(--secondary)]">YOU</p>
       <h1 className="large-title mt-1">{profile.name}</h1>
@@ -75,15 +78,23 @@ export function MeScreen() {
               if (!notifyEnabled) {
                 const ok = await requestNotifyPermission();
                 setNotify(true);
-                if (!ok) {
-                  alert("若在 iPhone，请先把网页加到主屏幕，并允许通知。应用在打开时也会在设定时间弹出回顾。");
-                }
-              } else setNotify(false);
+                setNotifyHint(
+                  ok
+                    ? "已打开。应用在晚上到达设定时间时会提醒你回顾今天。"
+                    : "系统通知未授权。请把网页加到主屏幕后再试。只要打开应用，到点仍会弹出回顾。",
+                );
+              } else {
+                setNotify(false);
+                setNotifyHint("");
+              }
             }}
           >
             {notifyEnabled ? "开" : "关"}
           </button>
         </div>
+        {notifyHint && (
+          <p className="px-4 pb-3 text-[12px] leading-5 text-[var(--secondary)]">{notifyHint}</p>
+        )}
         <div className="flex items-center justify-between px-4 py-3">
           <div className="text-[16px]">提醒时间</div>
           <input
@@ -104,9 +115,10 @@ export function MeScreen() {
         把应用加到主屏幕，会更像一款属于你的手机软件。
       </p>
 
-      <button className="ghost-btn mt-6 text-[var(--danger)]" onClick={() => { if (confirm("清除全部本地数据？")) resetAll(); }}>
+      <button className="ghost-btn mt-6 text-[var(--danger)]" onClick={() => setResetOpen(true)}>
         重新开始
       </button>
+    </div>
 
       <Sheet open={metricsOpen} onClose={() => setMetricsOpen(false)} title="想看见还剩什么" tall>
         <p className="mb-4 text-[13px] text-[var(--secondary)]">最多选 6 项。写日记可解锁更多。</p>
@@ -204,6 +216,24 @@ export function MeScreen() {
         <p className="mt-3 text-[12px] text-[var(--tertiary)]">
           还剩约 {formatInt(life.remainingHours)} 小时。皮肤只是镜子，日子要自己过。
         </p>
+      </Sheet>
+
+      <Sheet open={resetOpen} onClose={() => setResetOpen(false)} title="重新开始">
+        <p className="text-[15px] leading-7 text-[var(--secondary)]">
+          会清除这台设备上的日记、清单和倒计时资料，回到第一次打开的样子。
+        </p>
+        <button
+          className="primary-btn mt-5"
+          onClick={() => {
+            resetAll();
+            setResetOpen(false);
+          }}
+        >
+          清除并离开
+        </button>
+        <button className="ghost-btn mt-2" onClick={() => setResetOpen(false)}>
+          留下
+        </button>
       </Sheet>
     </div>
   );

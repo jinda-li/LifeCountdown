@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
+import { LifeCanvas } from "@/components/LifeCanvas";
+import { formatInt } from "@/lib/format";
 import { snapshot } from "@/lib/life";
 import { useApp } from "@/lib/store";
 import { useNow } from "@/lib/useNow";
-import { cn } from "@/lib/cn";
-import { formatInt } from "@/lib/format";
 
 export function GridScreen() {
   const now = useNow(60_000);
@@ -18,7 +18,6 @@ export function GridScreen() {
 
   const years = Math.max(40, Math.ceil(life.deathAge));
   const livedYears = Math.min(years, Math.floor(life.ageYears));
-  const currentYearFrac = life.ageYears - Math.floor(life.ageYears);
 
   const weeks = useMemo(() => {
     const cols = 52;
@@ -47,45 +46,9 @@ export function GridScreen() {
 
       <div className="card mt-4 px-3 py-4">
         {mode === "weeks" ? (
-          <div
-            className="grid gap-[2px]"
-            style={{ gridTemplateColumns: `repeat(${weeks.cols}, minmax(0, 1fr))` }}
-          >
-            {Array.from({ length: weeks.total }, (_, i) => (
-              <span
-                key={i}
-                className={cn(
-                  "aspect-square rounded-[0.8px]",
-                  i < livedWeeks
-                    ? "bg-[var(--lived)]"
-                    : i === livedWeeks
-                      ? "bg-[var(--accent)]"
-                      : "bg-[var(--remain-dot)]",
-                )}
-              />
-            ))}
-          </div>
+          <LifeCanvas cols={weeks.cols} total={weeks.total} lived={livedWeeks} mode="weeks" />
         ) : (
-          <div className="grid grid-cols-10 gap-2">
-            {Array.from({ length: years }, (_, i) => (
-              <span
-                key={i}
-                className={cn(
-                  "aspect-square rounded-md",
-                  i < livedYears
-                    ? "bg-[var(--lived)]"
-                    : i === livedYears
-                      ? "bg-[var(--accent)]"
-                      : "bg-[var(--remain-dot)]",
-                )}
-                style={
-                  i === livedYears
-                    ? { boxShadow: `inset 0 0 0 2px var(--accent)`, background: `linear-gradient(to top, var(--accent) ${currentYearFrac * 100}%, var(--remain-dot) ${currentYearFrac * 100}%)` }
-                    : undefined
-                }
-              />
-            ))}
-          </div>
+          <LifeCanvas cols={10} total={years} lived={livedYears} mode="years" />
         )}
         <div className="mt-4 flex justify-between text-[11px] text-[var(--tertiary)]">
           <span>出生</span>

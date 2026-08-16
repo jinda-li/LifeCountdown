@@ -79,6 +79,8 @@ body {
   -webkit-font-smoothing: antialiased;
   user-select: none;
   overflow: hidden;
+  touch-action: manipulation;
+  overscroll-behavior: none;
 }
 
 button,
@@ -87,6 +89,10 @@ textarea,
 select {
   font-family: inherit;
   color: inherit;
+}
+
+button {
+  cursor: pointer;
 }
 
 .font-display {

@@ -22,10 +22,10 @@ export function Onboarding() {
   const [countryId, setCountryId] = useState("china");
   const [city, setCity] = useState("");
   const [q, setQ] = useState("");
-  const countries = useMemo(() => searchCountries(q).slice(0, 40), [q]);
+  const countries = useMemo(() => searchCountries(q), [q]);
   const selected = getCountry(countryId);
 
-  const maxDate = new Date().toISOString().slice(0, 10);
+  const maxDate = toISODate(new Date());
 
   const canNext =
     step === 0 ||

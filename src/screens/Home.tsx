@@ -9,6 +9,7 @@ import { useApp } from "@/lib/store";
 import { useISOToday, useNow } from "@/lib/useNow";
 import { haptic } from "@/lib/haptics";
 import { Lock } from "lucide-react";
+import { useState } from "react";
 
 export function HomeScreen() {
   const now = useNow(1000);
@@ -48,6 +49,7 @@ export function HomeScreen() {
 
   const wrote = Boolean(journals[today]);
   const evening = now.getHours() >= 18;
+  const [skinHint, setSkinHint] = useState("");
 
   return (
     <div className="scroll">
@@ -85,8 +87,11 @@ export function HomeScreen() {
               className={`chip shrink-0 ${on ? "on" : ""}`}
               onClick={() => {
                 haptic();
-                if (locked) useApp.setState({ tab: "me" });
-                else setSkin(s.id);
+                if (locked) setSkinHint(`「${s.name}」还锁着。写下日记或到「我的」用晨光兑换。`);
+                else {
+                  setSkinHint("");
+                  setSkin(s.id);
+                }
               }}
             >
               {locked && <Lock size={11} className="mr-1 inline" />}
@@ -95,6 +100,7 @@ export function HomeScreen() {
           );
         })}
       </div>
+      {skinHint && <p className="mt-2 text-[12px] text-[var(--secondary)]">{skinHint}</p>}
 
       <p className="mt-6 text-[17px] leading-7">{quoteForDate(today)}</p>
       <p className="mt-2 text-[13px] text-[var(--secondary)]">
