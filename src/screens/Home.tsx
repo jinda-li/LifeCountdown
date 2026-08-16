@@ -77,7 +77,7 @@ export function HomeScreen() {
         )}
       </div>
 
-      <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+      <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {SKINS.map((s) => {
           const on = skin === s.id;
           const locked = !unlockedSkins.includes(s.id);
@@ -94,7 +94,7 @@ export function HomeScreen() {
                 }
               }}
             >
-              {locked && <Lock size={11} className="mr-1 inline" />}
+              {locked && <Lock size={11} strokeWidth={2} />}
               {s.name}
             </button>
           );
@@ -115,7 +115,7 @@ export function HomeScreen() {
             <button
               key={id}
               className="card px-4 py-4 text-left"
-              onClick={() => useApp.setState({ tab: "me" })}
+              onClick={() => useApp.setState({ tab: "me", panel: "metrics" })}
             >
               <div className="text-[12px] text-[var(--secondary)]">{def.name}</div>
               <div className="mt-2 font-display text-[22px] font-semibold tabular-nums tracking-tight">
@@ -129,7 +129,7 @@ export function HomeScreen() {
 
       <button
         className="card mt-3 w-full px-4 py-4 text-left"
-        onClick={() => useApp.setState({ tab: "me" })}
+        onClick={() => useApp.setState({ tab: "me", panel: "metrics" })}
       >
         <div className="text-[15px] font-medium">想看见还剩什么</div>
         <div className="mt-1 text-[13px] text-[var(--secondary)]">日出、吃饭、旅行、拥抱……自己选。</div>

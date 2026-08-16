@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { METRICS } from "@/data/metrics";
 import { SKINS, THEMES } from "@/data/rewards";
 import { Sheet } from "@/components/ui/Sheet";
@@ -35,6 +35,13 @@ export function MeScreen() {
   const [shop, setShop] = useState(false);
   const [notifyHint, setNotifyHint] = useState("");
   const [resetOpen, setResetOpen] = useState(false);
+  const panel = useApp((s) => s.panel);
+  const setPanel = useApp((s) => s.setPanel);
+
+  useEffect(() => {
+    if (panel === "metrics") setMetricsOpen(true);
+    if (panel === "shop") setShop(true);
+  }, [panel]);
 
   const country = getCountry(profile.countryId);
   const life = snapshot({
@@ -120,7 +127,15 @@ export function MeScreen() {
       </button>
     </div>
 
-      <Sheet open={metricsOpen} onClose={() => setMetricsOpen(false)} title="想看见还剩什么" tall>
+      <Sheet
+        open={metricsOpen}
+        onClose={() => {
+          setMetricsOpen(false);
+          setPanel(null);
+        }}
+        title="想看见还剩什么"
+        tall
+      >
         <p className="mb-4 text-[13px] text-[var(--secondary)]">最多选 6 项。写日记可解锁更多。</p>
         <div className="space-y-2">
           {METRICS.map((m) => {
@@ -163,7 +178,15 @@ export function MeScreen() {
         </div>
       </Sheet>
 
-      <Sheet open={shop} onClose={() => setShop(false)} title="晨光商店" tall>
+      <Sheet
+        open={shop}
+        onClose={() => {
+          setShop(false);
+          setPanel(null);
+        }}
+        title="晨光商店"
+        tall
+      >
         <p className="mb-3 text-[13px] text-[var(--secondary)]">
           每天写下今天，即可获得晨光并自动解锁。也可以提前兑换。当前 {light} 晨光。
         </p>

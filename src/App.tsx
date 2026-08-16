@@ -138,7 +138,10 @@ export default function App() {
               onClick={() => {
                 hapticSuccess();
                 clearLastUnlock();
-                useApp.setState({ tab: "me" });
+                useApp.setState({
+                  tab: "me",
+                  panel: lastUnlock.kind === "metric" ? "metrics" : "shop",
+                });
               }}
             >
               <div className="text-[12px] tracking-[0.16em] opacity-70">已解锁</div>

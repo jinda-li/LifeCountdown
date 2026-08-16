@@ -70,7 +70,9 @@ export type AppState = {
   lastNotifyDate: string | null;
   lastUnlock: { kind: "skin" | "theme" | "metric"; id: string; name: string } | null;
   eveningOpen: boolean;
+  panel: "metrics" | "shop" | null;
   setTab: (tab: TabId) => void;
+  setPanel: (panel: "metrics" | "shop" | null) => void;
   completeOnboarding: (profile: Profile) => void;
   saveJournal: (entry: JournalEntry) => void;
   setSkin: (id: SkinId) => void;
@@ -151,7 +153,9 @@ export const useApp = create<AppState>()(
       lastNotifyDate: null,
       lastUnlock: null,
       eveningOpen: false,
-      setTab: (tab) => set({ tab }),
+      panel: null,
+      setTab: (tab) => set({ tab, panel: tab === "me" ? get().panel : null }),
+      setPanel: (panel) => set({ panel }),
       completeOnboarding: (profile) =>
         set({
           onboarded: true,
@@ -279,6 +283,7 @@ export const useApp = create<AppState>()(
           lastNotifyDate: null,
           lastUnlock: null,
           eveningOpen: false,
+          panel: null,
         }),
     }),
     {

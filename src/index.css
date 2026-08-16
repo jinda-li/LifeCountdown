@@ -253,6 +253,10 @@ html[data-theme="night"] .primary-btn {
   border-radius: 999px;
   padding: 8px 12px;
   font-size: 13px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .chip.on {
@@ -276,6 +280,11 @@ textarea.ios-input {
   resize: none;
   min-height: 120px;
   line-height: 1.55;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+input.ios-input {
   user-select: text;
   -webkit-user-select: text;
 }
