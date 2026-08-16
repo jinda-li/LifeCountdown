@@ -280,7 +280,6 @@ textarea.ios-input {
   -webkit-user-select: text;
 }
 
-input.ios-input {
-  user-select: text;
-  -webkit-user-select: text;
+select.ios-input {
+  appearance: auto;
 }

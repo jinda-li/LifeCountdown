@@ -148,14 +148,7 @@ export function Onboarding() {
             <motion.div key="2" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
               <h1 className="large-title">你哪一天来到世上</h1>
               <p className="mt-3 mb-6 text-[15px] text-[var(--secondary)]">年月日即可。我们用来推算还剩下的时间。</p>
-              <input
-                className="ios-input"
-                type="date"
-                max={maxDate}
-                min="1920-01-01"
-                value={birthISO}
-                onChange={(e) => setBirthISO(e.target.value)}
-              />
+              <BirthPicker value={birthISO} onChange={setBirthISO} max={maxDate} />
             </motion.div>
           )}
 
@@ -270,6 +263,72 @@ export function Onboarding() {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function BirthPicker({
+  value,
+  onChange,
+  max,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  max: string;
+}) {
+  const maxY = Number(max.slice(0, 4));
+  const parts = value ? value.split("-").map(Number) : [0, 0, 0];
+  const year = parts[0] || 0;
+  const month = parts[1] || 0;
+  const day = parts[2] || 0;
+  const years = Array.from({ length: maxY - 1920 + 1 }, (_, i) => maxY - i);
+  const daysInMonth = year && month ? new Date(year, month, 0).getDate() : 31;
+
+  const emit = (y: number, m: number, d: number) => {
+    if (!y || !m || !d) {
+      onChange("");
+      return;
+    }
+    const dim = new Date(y, m, 0).getDate();
+    const dd = Math.min(d, dim);
+    onChange(`${y}-${String(m).padStart(2, "0")}-${String(dd).padStart(2, "0")}`);
+  };
+
+  return (
+    <div className="grid grid-cols-3 gap-2">
+      <label className="text-[12px] text-[var(--secondary)]">
+        年
+        <select className="ios-input mt-1" value={year || ""} onChange={(e) => emit(Number(e.target.value), month, day || 1)}>
+          <option value="">选择</option>
+          {years.map((y) => (
+            <option key={y} value={y}>
+              {y}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="text-[12px] text-[var(--secondary)]">
+        月
+        <select className="ios-input mt-1" value={month || ""} onChange={(e) => emit(year, Number(e.target.value), day || 1)}>
+          <option value="">选择</option>
+          {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+            <option key={m} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="text-[12px] text-[var(--secondary)]">
+        日
+        <select className="ios-input mt-1" value={day || ""} onChange={(e) => emit(year, month, Number(e.target.value))}>
+          <option value="">选择</option>
+          {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((d) => (
+            <option key={d} value={d}>
+              {d}
+            </option>
+          ))}
+        </select>
+      </label>
     </div>
   );
 }
