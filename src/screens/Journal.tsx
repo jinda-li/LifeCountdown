@@ -9,7 +9,7 @@ import { cn } from "@/lib/cn";
 
 function monthCells(year: number, month: number) {
   const first = new Date(year, month - 1, 1);
-  const start = first.getDay();
+  const start = (first.getDay() + 6) % 7;
   const days = new Date(year, month, 0).getDate();
   const cells: (string | null)[] = [];
   for (let i = 0; i < start; i++) cells.push(null);
