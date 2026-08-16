@@ -6,7 +6,7 @@
 
 打开：[https://jinda-li.github.io/LifeCountdown/](https://jinda-li.github.io/LifeCountdown/)
 
-（若链接尚未生效，请在仓库 Settings → Pages 中启用 GitHub Pages，来源选择 GitHub Actions。）
+第一次上线请先打开 [仓库 Pages 设置](https://github.com/jinda-li/LifeCountdown/settings/pages)：Source 选 **Deploy from a branch**，Branch 选 **`gh-pages` / root**。若仓库为 Private，GitHub Pages 需要 Pro，或把仓库改为 Public。
 
 ## 它做什么
 

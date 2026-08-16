@@ -145,6 +145,59 @@ export function HomeScreen() {
       >
         {wrote ? "今天已经写下了" : evening ? "今晚回顾 · 你今天又过去了一天" : "写下今天"}
       </button>
+
+      <ShareRow hours={life.remainingHours} weeks={life.remainingWeeks} />
+      <InstallTip />
+    </div>
+  );
+}
+
+function ShareRow({ hours, weeks }: { hours: number; weeks: number }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      className="ghost-btn mt-2"
+      onClick={async () => {
+        const text = `今天是我余生里最年轻的一天。\n大约还剩 ${formatInt(hours)} 小时，${formatInt(weeks)} 周。\n—— 今日最年轻`;
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch {
+          /* ignore */
+        }
+        haptic();
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 1600);
+      }}
+    >
+      {copied ? "已复制到剪贴板" : "复制今天的余生"}
+    </button>
+  );
+}
+
+function InstallTip() {
+  const [show, setShow] = useState(() => {
+    try {
+      return localStorage.getItem("youngest.tip.install") !== "1";
+    } catch {
+      return false;
+    }
+  });
+  if (!show) return null;
+  return (
+    <div className="card mt-4 px-4 py-4">
+      <p className="text-[15px] font-medium">放到主屏幕</p>
+      <p className="mt-1 text-[13px] leading-6 text-[var(--secondary)]">
+        iPhone：Safari 底部分享按钮 → 添加到主屏幕。Android：浏览器菜单 → 添加到主屏幕。之后晚上的提醒会更准时。
+      </p>
+      <button
+        className="chip mt-3"
+        onClick={() => {
+          localStorage.setItem("youngest.tip.install", "1");
+          setShow(false);
+        }}
+      >
+        知道了
+      </button>
     </div>
   );
 }
