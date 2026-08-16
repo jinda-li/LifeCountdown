@@ -5,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 import path from "node:path";
 
-const base = process.env.GITHUB_PAGES === "true" ? "/LifeCountdown/" : "/";
+const base = "./";
 
 export default defineConfig({
   base,

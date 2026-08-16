@@ -4,9 +4,10 @@
 
 **今天，是你余生里最年轻的一天。**
 
-打开：[https://jinda-li.github.io/LifeCountdown/](https://jinda-li.github.io/LifeCountdown/)
+打开线上版：
 
-第一次上线请先打开 [仓库 Pages 设置](https://github.com/jinda-li/LifeCountdown/settings/pages)：Source 选 **Deploy from a branch**，Branch 选 **`gh-pages` / root**。若仓库为 Private，GitHub Pages 需要 Pro，或把仓库改为 Public。
+- GitHub Pages：https://jinda-li.github.io/LifeCountdown/
+- jsDelivr 镜像（Pages 打不开时用）：https://cdn.jsdelivr.net/gh/jinda-li/LifeCountdown@gh-pages/index.html
 
 ## 它做什么
 
