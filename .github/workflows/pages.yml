@@ -37,11 +37,19 @@ jobs:
     permissions:
       pages: write
       id-token: write
+      contents: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     continue-on-error: true
     steps:
+      - name: Enable GitHub Pages if needed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST repos/${{ github.repository }}/pages \
+            -H "Accept: application/vnd.github+json" \
+            -f build_type=workflow || true
       - id: deployment
         uses: actions/deploy-pages@v4
 
@@ -50,6 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pages: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -61,3 +70,17 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           force_orphan: true
+      - name: Enable Pages from gh-pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST repos/${{ github.repository }}/pages \
+            -H "Accept: application/vnd.github+json" \
+            -f build_type=legacy \
+            -f "source[branch]=gh-pages" \
+            -f "source[path]=/" || \
+          gh api --method PUT repos/${{ github.repository }}/pages \
+            -H "Accept: application/vnd.github+json" \
+            -f build_type=legacy \
+            -f "source[branch]=gh-pages" \
+            -f "source[path]=/" || true
