@@ -154,7 +154,7 @@ body {
   -webkit-font-smoothing: antialiased;
   user-select: none;
   overflow: hidden;
-  touch-action: manipulation;
+  touch-action: pan-y;
   overscroll-behavior: none;
 }
 
@@ -167,6 +167,15 @@ select {
 }
 
 button {
+  cursor: pointer;
+  touch-action: manipulation;
+  pointer-events: auto;
+  position: relative;
+}
+
+.tap {
+  -webkit-tap-highlight-color: rgba(28, 25, 21, 0.1);
+  touch-action: manipulation;
   cursor: pointer;
 }
 
@@ -193,7 +202,7 @@ button {
   flex-direction: column;
 }
 
-@media (min-width: 768px) {
+@media (hover: hover) and (pointer: fine) and (min-width: 768px) {
   .phone {
     width: 390px;
     height: min(844px, calc(100dvh - 40px));
@@ -236,6 +245,20 @@ button {
   padding: calc(var(--safe-top) + 18px) 20px 18px;
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) transparent;
+  position: relative;
+  z-index: 1;
+}
+
+.onboard-bar {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 20;
+  padding: 12px 20px max(24px, env(safe-area-inset-bottom, 0px));
+  background: var(--bg);
+}
+
+.is-selected {
+  box-shadow: var(--shadow), 0 0 0 2px var(--ink);
 }
 
 .tabbar {
