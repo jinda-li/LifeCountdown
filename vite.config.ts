@@ -9,6 +9,14 @@ const base = "./";
 
 export default defineConfig({
   base,
+  server: {
+    host: true,
+    allowedHosts: true,
+  },
+  preview: {
+    host: true,
+    allowedHosts: true,
+  },
   plugins: [
     react(),
     tailwindcss(),
