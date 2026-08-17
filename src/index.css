@@ -1,0 +1,322 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --bg: #f3eee4;
+  --elevated: #fffdf8;
+  --fill: rgba(28, 25, 21, 0.06);
+  --ink: #1c1915;
+  --secondary: #6d655c;
+  --tertiary: #9a9288;
+  --line: rgba(28, 25, 21, 0.08);
+  --line-strong: rgba(28, 25, 21, 0.16);
+  --accent: #c45c26;
+  --accent-soft: #f1d2bc;
+  --gold: #c4a46b;
+  --ok: #3f7d5a;
+  --danger: #b54a3c;
+  --lived: #cbbba3;
+  --remain-dot: #e4d9c8;
+  --shadow: 0 12px 40px rgba(60, 40, 16, 0.08);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Helvetica Neue", sans-serif;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+}
+
+html[data-theme="paper"] {
+  --bg: #f2f2f7;
+  --elevated: #ffffff;
+  --fill: rgba(60, 60, 67, 0.08);
+  --ink: #000000;
+  --secondary: #6c6c70;
+  --tertiary: #8e8e93;
+  --line: rgba(60, 60, 67, 0.12);
+  --line-strong: rgba(60, 60, 67, 0.24);
+  --accent: #ff9f0a;
+  --accent-soft: #ffe0ad;
+  --gold: #d4a017;
+  --lived: #c7c7cc;
+  --remain-dot: #e5e5ea;
+}
+
+html[data-theme="night"] {
+  color-scheme: dark;
+  --bg: #0e0d0b;
+  --elevated: #1a1814;
+  --fill: rgba(255, 248, 236, 0.08);
+  --ink: #f4efe6;
+  --secondary: #b3aa9d;
+  --tertiary: #7e766b;
+  --line: rgba(244, 239, 230, 0.1);
+  --line-strong: rgba(244, 239, 230, 0.2);
+  --accent: #e8a87c;
+  --accent-soft: #5a3d2c;
+  --gold: #d4b07a;
+  --ok: #7dba93;
+  --danger: #e07a6c;
+  --lived: #3a342c;
+  --remain-dot: #2a2620;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font);
+  background: #cfc6b8;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  overflow: hidden;
+  touch-action: pan-y;
+  overscroll-behavior: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+  pointer-events: auto;
+  position: relative;
+}
+
+.tap {
+  -webkit-tap-highlight-color: rgba(28, 25, 21, 0.1);
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+.font-display {
+  font-family: var(--font);
+}
+
+.app-root {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, #efe6d6, transparent 55%),
+    #cfc6b8;
+}
+
+.phone {
+  position: relative;
+  width: min(100vw, 430px);
+  height: 100dvh;
+  background: var(--bg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+  .phone {
+    width: 390px;
+    height: min(844px, calc(100dvh - 40px));
+    border-radius: 44px;
+    border: 11px solid #1c1915;
+    box-shadow:
+      0 30px 80px rgba(40, 24, 8, 0.28),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+
+  .phone::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    z-index: 60;
+    width: 118px;
+    height: 28px;
+    transform: translateX(-50%);
+    background: #1c1915;
+    border-radius: 20px;
+    pointer-events: none;
+  }
+}
+
+.screen {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: calc(var(--safe-top) + 18px) 20px 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.onboard-bar {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 20;
+  padding: 12px 20px max(24px, env(safe-area-inset-bottom, 0px));
+  background: var(--bg);
+}
+
+.is-selected {
+  box-shadow: var(--shadow), 0 0 0 2px var(--ink);
+}
+
+.tabbar {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  padding: 8px 8px calc(8px + var(--safe-bot));
+  background: color-mix(in srgb, var(--elevated) 82%, transparent);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 0.5px solid var(--line);
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: 0;
+  color: var(--tertiary);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+
+.tab-item.active {
+  color: var(--accent);
+}
+
+.tab-dot {
+  position: absolute;
+  top: -2px;
+  right: -6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 99px;
+  background: var(--accent);
+}
+
+.card {
+  background: var(--elevated);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  border: 0.5px solid var(--line);
+}
+
+.ios-input {
+  width: 100%;
+  border: 0;
+  background: var(--fill);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 17px;
+  outline: none;
+}
+
+.ios-input:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.primary-btn {
+  width: 100%;
+  border: 0;
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 16px;
+  padding: 16px 18px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+html[data-theme="night"] .primary-btn {
+  color: #1c1915;
+  background: #f4efe6;
+}
+
+.ghost-btn {
+  width: 100%;
+  border: 0;
+  background: var(--fill);
+  color: var(--ink);
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-size: 16px;
+}
+
+.chip {
+  border: 0;
+  background: var(--fill);
+  color: var(--secondary);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 13px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chip.on {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+html[data-theme="night"] .chip.on {
+  background: #f4efe6;
+  color: #1c1915;
+}
+
+.large-title {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+textarea.ios-input {
+  resize: none;
+  min-height: 120px;
+  line-height: 1.55;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+input.ios-input {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+input.ios-input.date-input {
+  min-height: 52px;
+  font-size: 17px;
+}
+
+input[type="date"].date-input::-webkit-date-and-time-value {
+  text-align: left;
+}
