@@ -5,7 +5,7 @@ import { NumberTicker } from "@/components/ui/NumberTicker";
 import { searchCountries, snapshot, type Gender, getCountry } from "@/lib/life";
 import { useApp } from "@/lib/store";
 import { haptic, hapticSuccess } from "@/lib/haptics";
-import { addDays, formatInt, toISODate } from "@/lib/format";
+import { addDays, formatInt, pad2, toISODate } from "@/lib/format";
 
 const GENDERS: { id: Gender; label: string; hint: string }[] = [
   { id: "female", label: "女", hint: "按女性预期寿命估算" },
@@ -277,58 +277,103 @@ function BirthPicker({
   max: string;
 }) {
   const maxY = Number(max.slice(0, 4));
-  const parts = value ? value.split("-").map(Number) : [0, 0, 0];
-  const year = parts[0] || 0;
-  const month = parts[1] || 0;
-  const day = parts[2] || 0;
-  const years = Array.from({ length: maxY - 1920 + 1 }, (_, i) => maxY - i);
+  const parsed = value ? value.split("-").map(Number) : [0, 0, 0];
+  const [year, setYear] = useState(parsed[0] || 0);
+  const [month, setMonth] = useState(parsed[1] || 0);
+  const [day, setDay] = useState(parsed[2] || 0);
+
+  const years = Array.from({ length: maxY - 1919 }, (_, i) => maxY - i);
   const daysInMonth = year && month ? new Date(year, month, 0).getDate() : 31;
 
-  const emit = (y: number, m: number, d: number) => {
-    if (!y || !m || !d) {
-      onChange("");
-      return;
-    }
-    const dim = new Date(y, m, 0).getDate();
-    const dd = Math.min(d, dim);
-    onChange(`${y}-${String(m).padStart(2, "0")}-${String(dd).padStart(2, "0")}`);
+  const apply = (y: number, m: number, d: number) => {
+    const dim = y && m ? new Date(y, m, 0).getDate() : 31;
+    const nextDay = d ? Math.min(d, dim) : 0;
+    setYear(y);
+    setMonth(m);
+    setDay(nextDay);
+    if (y && m && nextDay) onChange(`${y}-${pad2(m)}-${pad2(nextDay)}`);
+    else onChange("");
   };
 
   return (
-    <div className="grid grid-cols-3 gap-2">
-      <label className="text-[12px] text-[var(--secondary)]">
-        年
-        <select className="ios-input mt-1" value={year || ""} onChange={(e) => emit(Number(e.target.value), month, day || 1)}>
-          <option value="">选择</option>
-          {years.map((y) => (
-            <option key={y} value={y}>
-              {y}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label className="text-[12px] text-[var(--secondary)]">
-        月
-        <select className="ios-input mt-1" value={month || ""} onChange={(e) => emit(year, Number(e.target.value), day || 1)}>
-          <option value="">选择</option>
-          {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
-            <option key={m} value={m}>
-              {m}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label className="text-[12px] text-[var(--secondary)]">
-        日
-        <select className="ios-input mt-1" value={day || ""} onChange={(e) => emit(year, month, Number(e.target.value))}>
-          <option value="">选择</option>
-          {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((d) => (
-            <option key={d} value={d}>
-              {d}
-            </option>
-          ))}
-        </select>
-      </label>
+    <div>
+      <input
+        className="ios-input date-input"
+        type="date"
+        min="1920-01-01"
+        max={max}
+        value={value}
+        onChange={(e) => {
+          const v = e.target.value;
+          onChange(v);
+          if (!v) {
+            setYear(0);
+            setMonth(0);
+            setDay(0);
+            return;
+          }
+          const [y, m, d] = v.split("-").map(Number);
+          setYear(y);
+          setMonth(m);
+          setDay(d);
+        }}
+      />
+      <p className="mt-4 mb-2 text-[12px] text-[var(--tertiary)]">或点下面的数字，选完年、月、日即可继续</p>
+      <div className="grid grid-cols-3 gap-2">
+        <Wheel
+          label="年"
+          values={years}
+          value={year}
+          onChange={(y) => apply(y, month, day || 1)}
+        />
+        <Wheel
+          label="月"
+          values={Array.from({ length: 12 }, (_, i) => i + 1)}
+          value={month}
+          onChange={(m) => apply(year, m, day || 1)}
+        />
+        <Wheel
+          label="日"
+          values={Array.from({ length: daysInMonth }, (_, i) => i + 1)}
+          value={day}
+          onChange={(d) => apply(year, month, d)}
+        />
+      </div>
+    </div>
+  );
+}
+
+function Wheel({
+  label,
+  values,
+  value,
+  onChange,
+}: {
+  label: string;
+  values: number[];
+  value: number;
+  onChange: (n: number) => void;
+}) {
+  return (
+    <div>
+      <div className="mb-1 text-center text-[12px] text-[var(--secondary)]">{label}</div>
+      <div className="h-[196px] overflow-y-auto rounded-[16px] bg-[var(--fill)] py-1">
+        {values.map((n) => (
+          <button
+            key={n}
+            type="button"
+            className={`flex h-10 w-full items-center justify-center text-[17px] tabular-nums ${
+              value === n ? "rounded-[12px] bg-[var(--elevated)] font-semibold text-[var(--ink)]" : "text-[var(--secondary)]"
+            }`}
+            onClick={() => {
+              haptic();
+              onChange(n);
+            }}
+          >
+            {n}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

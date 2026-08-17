@@ -289,6 +289,11 @@ input.ios-input {
   -webkit-user-select: text;
 }
 
-select.ios-input {
-  appearance: auto;
+input.ios-input.date-input {
+  min-height: 52px;
+  font-size: 17px;
+}
+
+input[type="date"].date-input::-webkit-date-and-time-value {
+  text-align: left;
 }
