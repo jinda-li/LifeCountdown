@@ -188,8 +188,8 @@ export function Onboarding() {
                       <div className="text-[17px] font-medium">{g.label}</div>
                       <div className="mt-1 text-[13px] text-[var(--secondary)]">{g.hint}</div>
                     </div>
-                    <span className={`ml-3 text-[18px] ${selectedGender ? "text-[var(--accent)]" : "text-transparent"}`}>
-                      ✓
+                    <span className="ml-3 text-[18px] text-[var(--accent)]" aria-hidden="true">
+                      {selectedGender ? "✓" : ""}
                     </span>
                   </button>
                 );
