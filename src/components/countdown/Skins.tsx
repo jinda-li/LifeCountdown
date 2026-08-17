@@ -3,6 +3,7 @@ import { formatInt } from "@/lib/format";
 import type { LifeSnapshot } from "@/lib/life";
 import type { SkinId } from "@/data/rewards";
 import { NumberTicker } from "@/components/ui/NumberTicker";
+import { LifeSlider } from "@/components/ui/LifeSlider";
 
 function HoursBlock({ life, live }: { life: LifeSnapshot; live?: boolean }) {
   return (
@@ -48,12 +49,7 @@ function Progress({ life }: { life: LifeSnapshot }) {
           <span>已走过 {pct.toFixed(1)}%</span>
           <span>还剩 {(100 - pct).toFixed(1)}%</span>
         </div>
-        <div className="h-[10px] overflow-hidden rounded-full bg-[var(--fill)]">
-          <div
-            className="h-full rounded-full bg-[var(--accent)] transition-[width] duration-700"
-            style={{ width: `${pct}%` }}
-          />
-        </div>
+        <LifeSlider value={pct} label="生命进度" compact />
         <div className="mt-2 flex justify-between text-[11px] text-[var(--tertiary)]">
           <span>出生</span>
           <span>此刻</span>

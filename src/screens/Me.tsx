@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { METRICS } from "@/data/metrics";
 import { SKINS, THEMES } from "@/data/rewards";
 import { Sheet } from "@/components/ui/Sheet";
@@ -104,14 +104,28 @@ export function MeScreen() {
         )}
         <div className="flex items-center justify-between px-4 py-3">
           <div className="text-[16px]">提醒时间</div>
+          <div className="text-[15px] tabular-nums text-[var(--secondary)]">{notifyHour}:00</div>
+        </div>
+        <div className="px-4 pb-3">
           <input
-            type="number"
+            type="range"
             min={18}
             max={23}
-            className="w-16 rounded-lg bg-[var(--fill)] px-2 py-1 text-right"
+            step={1}
+            className="ios-range"
+            style={
+              {
+                "--range-pct": `${((notifyHour - 18) / 5) * 100}%`,
+              } as CSSProperties
+            }
             value={notifyHour}
             onChange={(e) => setNotify(notifyEnabled, Number(e.target.value) || 21)}
+            aria-label="提醒时间"
           />
+          <div className="flex justify-between text-[11px] text-[var(--tertiary)]">
+            <span>18:00</span>
+            <span>23:00</span>
+          </div>
         </div>
       </div>
 
