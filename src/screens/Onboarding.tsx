@@ -216,7 +216,7 @@ export function Onboarding() {
               value={city}
               onChange={(e) => setCity(e.target.value)}
             />
-            <div className="max-h-[42vh] overflow-y-auto rounded-[18px] bg-[var(--elevated)]">
+            <div className="themed-scroll max-h-[42vh] overflow-y-auto rounded-[18px] bg-[var(--elevated)]">
               {countries.map((c) => (
                 <button
                   key={c.id}
@@ -389,7 +389,7 @@ function Wheel({
   return (
     <div>
       <div className="mb-1 text-center text-[12px] text-[var(--secondary)]">{label}</div>
-      <div className="h-[196px] overflow-y-auto rounded-[16px] bg-[var(--fill)] py-1">
+      <div className="wheel-scroll h-[196px] overflow-y-auto rounded-[16px] bg-[var(--fill)] py-1">
         {values.map((n) => (
           <button
             key={n}

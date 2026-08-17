@@ -29,7 +29,7 @@ export function Sheet({
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 320 }}
-            className={`relative z-10 w-full rounded-t-[28px] bg-[var(--elevated)] px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_40px_rgba(40,24,8,0.12)] ${
+            className={`themed-scroll relative z-10 w-full rounded-t-[28px] bg-[var(--elevated)] px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_40px_rgba(40,24,8,0.12)] ${
               tall ? "max-h-[92%]" : "max-h-[86%]"
             } overflow-y-auto`}
           >

@@ -17,6 +17,7 @@ import { toISODate } from "@/lib/format";
 export default function App() {
   const onboarded = useApp((s) => s.onboarded);
   const theme = useApp((s) => s.theme);
+  const skin = useApp((s) => s.skin);
   const tab = useApp((s) => s.tab);
   const setTab = useApp((s) => s.setTab);
   const journals = useApp((s) => s.journals);
@@ -33,10 +34,11 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
+    document.documentElement.dataset.skin = skin;
     const meta = document.querySelector('meta[name="theme-color"]');
     const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
     if (meta && bg) meta.setAttribute("content", bg);
-  }, [theme]);
+  }, [theme, skin]);
 
   useEffect(() => {
     const done = () => setHydrated(true);

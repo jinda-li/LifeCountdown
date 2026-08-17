@@ -6,6 +6,7 @@ import { haptic } from "@/lib/haptics";
 import { useApp, type LifeTask, type TaskStatus } from "@/lib/store";
 import { useNow } from "@/lib/useNow";
 import { Plus } from "lucide-react";
+import { LifeSlider } from "@/components/ui/LifeSlider";
 
 const STATUS: { id: TaskStatus; label: string }[] = [
   { id: "wish", label: "愿望" },
@@ -53,7 +54,7 @@ export function BoardsScreen() {
           列出来，设定日期，尽早完成。你大约还有 {formatInt(life.remainingWeeks)} 周——现在就是最早的时候。
         </p>
 
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
+        <div className="chip-scroll mt-4">
           {boards.map((b) => (
             <button
               key={b.id}
@@ -71,12 +72,12 @@ export function BoardsScreen() {
           </button>
         </div>
 
-        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[var(--fill)]">
-          <div
-            className="h-full bg-[var(--ok)]"
-            style={{ width: `${total ? (done / total) * 100 : 0}%` }}
-          />
-        </div>
+        <LifeSlider
+          compact
+          className="mt-3"
+          value={total ? (done / total) * 100 : 0}
+          label="清单完成进度"
+        />
         <p className="mt-2 text-[12px] text-[var(--tertiary)]">
           {done}/{total || 0} 已完成
         </p>
