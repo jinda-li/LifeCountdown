@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Sheet } from "@/components/ui/Sheet";
 import { snapshot } from "@/lib/life";
+import { DateField } from "@/components/ui/DateField";
 import { formatInt, formatDate } from "@/lib/format";
 import { haptic } from "@/lib/haptics";
 import { useApp, type LifeTask, type TaskStatus } from "@/lib/store";
@@ -45,35 +46,36 @@ export function BoardsScreen() {
   const total = tasks.filter((t) => t.boardId === boardId).length;
 
   return (
-    <div className="screen">
-      <div className="scroll">
+    <>
+      <div className="scroll pb-24">
         <p className="text-[13px] tracking-[0.16em] text-[var(--secondary)]">LIFE LIST</p>
         <h1 className="large-title mt-1">人生要做的事</h1>
         <p className="mt-3 text-[15px] leading-6 text-[var(--secondary)]">
           列出来，设定日期，尽早完成。你大约还有 {formatInt(life.remainingWeeks)} 周——现在就是最早的时候。
         </p>
 
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
+        <div className="h-scroll mt-4 flex gap-2 pb-1">
           {boards.map((b) => (
             <button
               key={b.id}
-              className={`chip shrink-0 ${boardId === b.id ? "on" : ""}`}
+              className={`chip max-w-[200px] shrink-0 ${boardId === b.id ? "on" : ""}`}
               onClick={() => {
                 haptic();
                 setBoardId(b.id);
               }}
             >
-              {b.emoji} {b.title}
+              <span className="truncate">{b.emoji} {b.title}</span>
             </button>
           ))}
           <button className="chip shrink-0" onClick={() => setNewBoard(true)}>
             + 新板
           </button>
+          <span className="w-8 shrink-0" aria-hidden />
         </div>
 
-        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[var(--fill)]">
+        <div className="meter mt-3">
           <div
-            className="h-full bg-[var(--ok)]"
+            className="meter-fill is-ok"
             style={{ width: `${total ? (done / total) * 100 : 0}%` }}
           />
         </div>
@@ -81,12 +83,12 @@ export function BoardsScreen() {
           {done}/{total || 0} 已完成
         </p>
 
-        <div className="mt-3 flex gap-2">
-          <button className={`chip ${status === "all" ? "on" : ""}`} onClick={() => setStatus("all")}>
+        <div className="mt-3 flex gap-1.5">
+          <button className={`chip min-w-0 flex-1 justify-center px-2 ${status === "all" ? "on" : ""}`} onClick={() => setStatus("all")}>
             全部
           </button>
           {STATUS.map((s) => (
-            <button key={s.id} className={`chip ${status === s.id ? "on" : ""}`} onClick={() => setStatus(s.id)}>
+            <button key={s.id} className={`chip min-w-0 flex-1 justify-center px-2 ${status === s.id ? "on" : ""}`} onClick={() => setStatus(s.id)}>
               {s.label}
             </button>
           ))}
@@ -105,11 +107,11 @@ export function BoardsScreen() {
               onClick={() => setEditing(t)}
             >
               <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="text-[16px] font-medium">{t.title}</div>
+                <div className="min-w-0">
+                  <div className="break-words text-[16px] font-medium">{t.title}</div>
                   {t.note && <div className="mt-1 line-clamp-2 text-[13px] text-[var(--secondary)]">{t.note}</div>}
                 </div>
-                <span className="text-[11px] text-[var(--tertiary)]">
+                <span className="shrink-0 text-[11px] text-[var(--tertiary)]">
                   {STATUS.find((s) => s.id === t.status)?.label}
                 </span>
               </div>
@@ -124,7 +126,9 @@ export function BoardsScreen() {
       </div>
 
       <button
-        className="absolute bottom-[88px] right-5 grid h-14 w-14 place-items-center rounded-full bg-[var(--ink)] text-[var(--bg)] shadow-lg"
+        type="button"
+        className="fab"
+        aria-label="添加一件事"
         onClick={() =>
           setEditing({
             boardId,
@@ -134,7 +138,7 @@ export function BoardsScreen() {
           })
         }
       >
-        <Plus />
+        <Plus size={22} strokeWidth={2.2} />
       </button>
 
       <Sheet open={Boolean(editing)} onClose={() => setEditing(null)} title={editing?.id ? "这件事" : "新的一件事"} tall>
@@ -184,7 +188,7 @@ export function BoardsScreen() {
           添加
         </button>
       </Sheet>
-    </div>
+    </>
   );
 }
 
@@ -228,11 +232,10 @@ function TaskForm({
         ))}
       </div>
       <p className="mb-2 mt-4 text-[13px] text-[var(--secondary)]">希望完成的日期</p>
-      <input
-        type="date"
-        className="ios-input"
+      <DateField
         value={task.due ?? ""}
-        onChange={(e) => onChange({ ...task, due: e.target.value })}
+        placeholder="不设日期也可以"
+        onChange={(v) => onChange({ ...task, due: v || undefined })}
       />
       <p className="mt-3 text-[13px] leading-6 text-[var(--secondary)]">
         统计上你大约还有 {formatInt(weeks)} 周。把日期设近一点，人生会跟着热起来。

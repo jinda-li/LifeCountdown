@@ -19,6 +19,12 @@ export function formatDate(iso: string, locale = "zh-CN") {
   });
 }
 
+export function formatZhYMD(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d) return "";
+  return `${y}年${m}月${d}日`;
+}
+
 export function toISODate(d: Date) {
   const y = d.getFullYear();
   const m = pad2(d.getMonth() + 1);

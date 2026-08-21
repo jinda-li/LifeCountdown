@@ -59,7 +59,7 @@ export function JournalScreen({ forceDate }: { forceDate?: string }) {
   const count = Object.keys(journals).length;
 
   return (
-    <div className="screen">
+    <>
       <div className="scroll">
         <p className="text-[13px] tracking-[0.16em] text-[var(--secondary)]">DAILY</p>
         <h1 className="large-title mt-1">日记</h1>
@@ -67,13 +67,13 @@ export function JournalScreen({ forceDate }: { forceDate?: string }) {
           写下今天，解锁皮肤与晨光。已记录 {count} 天。
         </p>
 
-        <div className="card mt-5 px-4 py-4">
-          <div className="mb-3 flex items-center justify-between">
-            <button className="text-[15px] text-[var(--accent)]" onClick={() => setCursor({ y: cursor.m === 1 ? cursor.y - 1 : cursor.y, m: cursor.m === 1 ? 12 : cursor.m - 1 })}>
+        <div className="card mt-5 px-4 py-4 pb-5">
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <button className="shrink-0 text-[15px] text-[var(--accent)]" onClick={() => setCursor({ y: cursor.m === 1 ? cursor.y - 1 : cursor.y, m: cursor.m === 1 ? 12 : cursor.m - 1 })}>
               上一月
             </button>
-            <div className="text-[16px] font-medium">{monthLabel(cursor.y, cursor.m)}</div>
-            <button className="text-[15px] text-[var(--accent)]" onClick={() => setCursor({ y: cursor.m === 12 ? cursor.y + 1 : cursor.y, m: cursor.m === 12 ? 1 : cursor.m + 1 })}>
+            <div className="min-w-0 truncate text-center text-[16px] font-medium">{monthLabel(cursor.y, cursor.m)}</div>
+            <button className="shrink-0 text-[15px] text-[var(--accent)]" onClick={() => setCursor({ y: cursor.m === 12 ? cursor.y + 1 : cursor.y, m: cursor.m === 12 ? 1 : cursor.m + 1 })}>
               下一月
             </button>
           </div>
@@ -95,10 +95,11 @@ export function JournalScreen({ forceDate }: { forceDate?: string }) {
                   onClick={() => openDay(iso)}
                   className={cn(
                     "mx-auto flex h-10 w-10 flex-col items-center justify-center rounded-full text-[15px] leading-none",
-                    isToday && "bg-[var(--ink)] text-[var(--bg)]",
+                    isToday && "cal-today",
                     has && !isToday && "text-[var(--accent)]",
                     future && "opacity-30",
                   )}
+                  style={isToday ? { background: "var(--ink)", color: "var(--bg)" } : undefined}
                 >
                   {Number(iso.slice(8))}
                   {has && (
@@ -148,7 +149,7 @@ export function JournalScreen({ forceDate }: { forceDate?: string }) {
           />
         )}
       </Sheet>
-    </div>
+    </>
   );
 }
 

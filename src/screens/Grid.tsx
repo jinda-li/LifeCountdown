@@ -44,16 +44,16 @@ export function GridScreen() {
         </button>
       </div>
 
-      <div className="card mt-4 px-3 py-4">
+      <div className="card mt-4 overflow-hidden px-3 py-4">
         {mode === "weeks" ? (
           <LifeCanvas cols={weeks.cols} total={weeks.total} lived={livedWeeks} mode="weeks" />
         ) : (
           <LifeCanvas cols={10} total={years} lived={livedYears} mode="years" />
         )}
-        <div className="mt-4 flex justify-between text-[11px] text-[var(--tertiary)]">
-          <span>出生</span>
-          <span>约 {formatInt(life.remainingWeeks)} 周未走</span>
-          <span>预期 {life.deathAge.toFixed(0)} 岁</span>
+        <div className="mt-4 flex items-start justify-between gap-2 text-[11px] leading-snug text-[var(--tertiary)]">
+          <span className="shrink-0">出生</span>
+          <span className="min-w-0 px-1 text-center">约 {formatInt(life.remainingWeeks)} 周未走</span>
+          <span className="shrink-0 text-right">预期 {life.deathAge.toFixed(0)} 岁</span>
         </div>
       </div>
     </div>

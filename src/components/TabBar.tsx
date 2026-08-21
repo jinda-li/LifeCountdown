@@ -33,7 +33,7 @@ export function TabBar({
               onChange(id);
             }}
           >
-            <span className="relative">
+            <span className="relative overflow-visible">
               <Icon size={22} strokeWidth={active ? 2.2 : 1.7} />
               {badge?.[id] && <span className="tab-dot" />}
             </span>

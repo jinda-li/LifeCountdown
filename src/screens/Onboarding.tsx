@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { BlurFade } from "@/components/ui/BlurFade";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { DateField } from "@/components/ui/DateField";
 import { NumberTicker } from "@/components/ui/NumberTicker";
 import { searchCountries, snapshot, type Gender, getCountry } from "@/lib/life";
 import { useApp } from "@/lib/store";
@@ -221,20 +221,24 @@ export function Onboarding() {
                 <button
                   key={c.id}
                   type="button"
-                  className={`tap flex w-full items-center justify-between border-b border-[var(--line)] px-4 py-3 text-left last:border-0 ${countryId === c.id ? "bg-[var(--fill)]" : ""}`}
+                  className={`tap flex w-full items-center gap-3 border-b border-[var(--line)] px-4 py-3 text-left last:border-0 ${countryId === c.id ? "bg-[var(--fill)]" : ""}`}
                   onClick={() => {
                     haptic();
                     setCountryId(c.id);
                   }}
                 >
-                  <span>
+                  <span className="min-w-0 flex-1 truncate">
                     <span className="text-[16px]">{c.nameZh}</span>
                     <span className="ml-2 text-[12px] text-[var(--tertiary)]">{c.nameEn}</span>
                   </span>
-                  <span className="text-[13px] tabular-nums text-[var(--secondary)]">
-                    {gender === "female" ? c.female : gender === "male" ? c.male : c.le} 岁
+                  <span className="flex shrink-0 items-center gap-2">
+                    <span className="text-[13px] tabular-nums text-[var(--secondary)]">
+                      {gender === "female" ? c.female : gender === "male" ? c.male : c.le} 岁
+                    </span>
+                    <span className="w-4 text-center text-[var(--accent)]" aria-hidden="true">
+                      {countryId === c.id ? "✓" : ""}
+                    </span>
                   </span>
-                  {countryId === c.id && <span className="ml-2 text-[var(--accent)]">✓</span>}
                 </button>
               ))}
             </div>
@@ -245,12 +249,12 @@ export function Onboarding() {
           <div>
             <p className="text-[13px] tracking-[0.18em] text-[var(--secondary)]">统计意义上</p>
             <h1 className="large-title mt-2">你大约还剩</h1>
-            <BlurFade delay={0.15} className="mt-8 text-center">
-              <div className="font-display text-[56px] font-semibold leading-none tracking-[-0.04em]">
+            <div className="mt-8 text-center">
+              <div className="font-display text-[56px] font-semibold leading-none tracking-[-0.04em] tabular-nums">
                 <NumberTicker value={Math.round(preview.remainingWeeks)} delay={0.1} />
               </div>
               <div className="mt-2 text-[13px] tracking-[0.2em] text-[var(--secondary)]">周</div>
-            </BlurFade>
+            </div>
             <p className="mt-8 text-center text-[15px] leading-7 text-[var(--secondary)]">
               按{selected?.nameZh}
               {city ? ` · ${city}` : ""}的预期寿命估算，大约还有{" "}
@@ -329,14 +333,12 @@ function BirthPicker({
 
   return (
     <div>
-      <input
-        className="ios-input date-input"
-        type="date"
+      <DateField
+        value={value}
         min="1920-01-01"
         max={max}
-        value={value}
-        onChange={(e) => {
-          const v = e.target.value;
+        placeholder="点这里选出生日期"
+        onChange={(v) => {
           onChange(v);
           if (!v) {
             setYear(0);
@@ -386,25 +388,63 @@ function Wheel({
   value: number;
   onChange: (n: number) => void;
 }) {
+  const scroller = useRef<HTMLDivElement>(null);
+  const skip = useRef(false);
+  const settle = useRef(0);
+  const itemH = 40;
+
+  useEffect(() => {
+    if (skip.current) {
+      skip.current = false;
+      return;
+    }
+    const el = scroller.current;
+    if (!el) return;
+    const i = [0, ...values].indexOf(value);
+    if (i < 0) return;
+    el.scrollTop = i * itemH;
+  }, [value, values.length]);
+
+  useEffect(() => () => window.clearTimeout(settle.current), []);
+
+  const commit = (el: HTMLDivElement) => {
+    const list = [0, ...values];
+    const i = Math.max(0, Math.min(list.length - 1, Math.round(el.scrollTop / itemH)));
+    const n = list[i];
+    if (n == null || n === value) return;
+    skip.current = true;
+    onChange(n);
+  };
+
   return (
     <div>
       <div className="mb-1 text-center text-[12px] text-[var(--secondary)]">{label}</div>
-      <div className="h-[196px] overflow-y-auto rounded-[16px] bg-[var(--fill)] py-1">
-        {values.map((n) => (
-          <button
-            key={n}
-            type="button"
-            className={`tap flex h-10 w-full items-center justify-center text-[17px] tabular-nums ${
-              value === n ? "rounded-[12px] bg-[var(--elevated)] font-semibold text-[var(--ink)]" : "text-[var(--secondary)]"
-            }`}
-            onClick={() => {
-              haptic();
-              onChange(n);
-            }}
-          >
-            {n}
-          </button>
-        ))}
+      <div className="wheel">
+        <div className="wheel-window" aria-hidden />
+        <div
+          ref={scroller}
+          className="wheel-col"
+          onScroll={(e) => {
+            const el = e.currentTarget;
+            window.clearTimeout(settle.current);
+            settle.current = window.setTimeout(() => commit(el), 80);
+          }}
+        >
+          {[0, ...values].map((n) => (
+            <button
+              key={n}
+              type="button"
+              className={`wheel-item tap ${value === n && n !== 0 ? "is-on" : ""}`}
+              onClick={() => {
+                haptic();
+                onChange(n);
+                scroller.current?.scrollTo({ top: ([0, ...values].indexOf(n)) * itemH, behavior: "smooth" });
+              }}
+            >
+              {n === 0 ? "—" : n}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
