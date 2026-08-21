@@ -23,7 +23,9 @@ export function LifeCanvas({
       const cssW = wrap.clientWidth;
       if (cssW < 8) return;
       const gap = mode === "years" ? 5 : 2;
-      const cell = Math.max(1, (cssW - gap * (cols - 1)) / cols);
+      const cell = Math.max(1, Math.floor((cssW - gap * (cols - 1)) / cols));
+      const gridW = cols * cell + (cols - 1) * gap;
+      const ox = Math.floor((cssW - gridW) / 2);
       const rows = Math.ceil(total / cols);
       const cssH = rows * cell + (rows - 1) * gap;
       const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -43,7 +45,7 @@ export function LifeCanvas({
       for (let i = 0; i < total; i++) {
         const c = i % cols;
         const r = Math.floor(i / cols);
-        const x = c * (cell + gap);
+        const x = ox + c * (cell + gap);
         const y = r * (cell + gap);
         ctx.fillStyle = i < lived ? livedColor : i === lived ? accent : remain;
         roundRect(ctx, x, y, cell, cell, radius);

@@ -99,6 +99,7 @@ export function JournalScreen({ forceDate }: { forceDate?: string }) {
                     has && !isToday && "text-[var(--accent)]",
                     future && "opacity-30",
                   )}
+                  style={isToday ? { background: "var(--ink)", color: "var(--bg)" } : undefined}
                 >
                   {Number(iso.slice(8))}
                   {has && (

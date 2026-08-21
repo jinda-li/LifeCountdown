@@ -70,7 +70,7 @@ export function BoardsScreen() {
           <button className="chip shrink-0" onClick={() => setNewBoard(true)}>
             + 新板
           </button>
-          <span className="w-2 shrink-0" aria-hidden />
+          <span className="w-8 shrink-0" aria-hidden />
         </div>
 
         <div className="meter mt-3">

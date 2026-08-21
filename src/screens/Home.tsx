@@ -99,7 +99,7 @@ export function HomeScreen() {
             </button>
           );
         })}
-        <span className="w-2 shrink-0" aria-hidden />
+        <span className="w-8 shrink-0" aria-hidden />
       </div>
       {skinHint && <p className="mt-2 text-[12px] text-[var(--secondary)]">{skinHint}</p>}
 
