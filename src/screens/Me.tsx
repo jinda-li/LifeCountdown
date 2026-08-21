@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { METRICS } from "@/data/metrics";
+import { METRICS, type MetricDef } from "@/data/metrics";
 import { SKINS, THEMES } from "@/data/rewards";
 import { Sheet } from "@/components/ui/Sheet";
+import { Slider } from "@/components/ui/Slider";
 import { getCountry, snapshot } from "@/lib/life";
 import { formatInt } from "@/lib/format";
 import { haptic } from "@/lib/haptics";
@@ -9,6 +10,23 @@ import { requestNotifyPermission } from "@/lib/notify";
 import { useApp } from "@/lib/store";
 import { useNow } from "@/lib/useNow";
 import { Lock } from "lucide-react";
+
+const YEAR_DAYS = 365.2425;
+
+function rateToSlider(m: MetricDef, perYear: number) {
+  const raw = m.perDay ? perYear / YEAR_DAYS : perYear;
+  const step = m.step ?? 1;
+  return Math.round(raw / step) * step;
+}
+
+function sliderToRate(m: MetricDef, value: number) {
+  return m.perDay ? value * YEAR_DAYS : value;
+}
+
+function formatRate(value: number, step: number) {
+  if (step < 1) return value.toFixed(1);
+  return String(Math.round(value));
+}
 
 export function MeScreen() {
   const now = useNow(30_000);
@@ -102,15 +120,18 @@ export function MeScreen() {
         {notifyHint && (
           <p className="px-4 pb-3 text-[12px] leading-5 text-[var(--secondary)]">{notifyHint}</p>
         )}
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="text-[16px]">提醒时间</div>
-          <input
-            type="number"
+        <div className="px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="text-[16px]">提醒时间</div>
+            <div className="text-[15px] tabular-nums text-[var(--secondary)]">{notifyHour}:00</div>
+          </div>
+          <Slider
+            className="mt-1"
             min={18}
             max={23}
-            className="w-16 rounded-lg bg-[var(--fill)] px-2 py-1 text-right"
             value={notifyHour}
-            onChange={(e) => setNotify(notifyEnabled, Number(e.target.value) || 21)}
+            aria-label="提醒时间"
+            onChange={(hour) => setNotify(notifyEnabled, hour)}
           />
         </div>
       </div>
@@ -161,16 +182,23 @@ export function MeScreen() {
                   </div>
                   <span className={`chip ${on ? "on" : ""}`}>{locked ? "2 晨光" : on ? "显示" : "隐藏"}</span>
                 </button>
-                {m.customizable && !locked && (
-                  <label className="mt-2 flex items-center justify-between text-[12px] text-[var(--secondary)]">
-                    每年大约
-                    <input
-                      type="number"
-                      className="w-20 rounded-lg bg-[var(--fill)] px-2 py-1 text-right text-[var(--ink)]"
-                      value={Number(rate.toFixed(1))}
-                      onChange={(e) => setMetricRate(m.id, Number(e.target.value) || m.perYear)}
+                {m.customizable && !locked && m.min != null && m.max != null && (
+                  <div className="mt-3">
+                    <div className="flex items-center justify-between text-[12px] text-[var(--secondary)]">
+                      <span>{m.perDay ? "每天大约" : "每年大约"}</span>
+                      <span className="tabular-nums text-[var(--ink)]">
+                        {formatRate(rateToSlider(m, rate), m.step ?? 1)} {m.unit}
+                      </span>
+                    </div>
+                    <Slider
+                      min={m.min}
+                      max={m.max}
+                      step={m.step ?? 1}
+                      value={rateToSlider(m, rate)}
+                      aria-label={`${m.name}频率`}
+                      onChange={(v) => setMetricRate(m.id, sliderToRate(m, v))}
                     />
-                  </label>
+                  </div>
                 )}
               </div>
             );

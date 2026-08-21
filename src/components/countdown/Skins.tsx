@@ -48,9 +48,9 @@ function Progress({ life }: { life: LifeSnapshot }) {
           <span>已走过 {pct.toFixed(1)}%</span>
           <span>还剩 {(100 - pct).toFixed(1)}%</span>
         </div>
-        <div className="h-[10px] overflow-hidden rounded-full bg-[var(--fill)]">
+        <div className="meter h-[10px]">
           <div
-            className="h-full rounded-full bg-[var(--accent)] transition-[width] duration-700"
+            className="meter-fill transition-[width] duration-700"
             style={{ width: `${pct}%` }}
           />
         </div>

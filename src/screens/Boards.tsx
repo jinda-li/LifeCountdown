@@ -53,7 +53,7 @@ export function BoardsScreen() {
           列出来，设定日期，尽早完成。你大约还有 {formatInt(life.remainingWeeks)} 周——现在就是最早的时候。
         </p>
 
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
+        <div className="h-scroll mt-4 flex gap-2 pb-1">
           {boards.map((b) => (
             <button
               key={b.id}
@@ -71,9 +71,9 @@ export function BoardsScreen() {
           </button>
         </div>
 
-        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[var(--fill)]">
+        <div className="meter mt-3">
           <div
-            className="h-full bg-[var(--ok)]"
+            className="meter-fill is-ok"
             style={{ width: `${total ? (done / total) * 100 : 0}%` }}
           />
         </div>
