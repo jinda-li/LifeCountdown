@@ -27,6 +27,8 @@ export type MetricDef = {
   customizable?: boolean;
   min?: number;
   max?: number;
+  step?: number;
+  perDay?: boolean;
 };
 
 export const METRICS: MetricDef[] = [
@@ -57,6 +59,7 @@ export const METRICS: MetricDef[] = [
     defaultOn: true,
     unlockAt: 0,
     customizable: true,
+    perDay: true,
     min: 1,
     max: 6,
   },
@@ -100,6 +103,7 @@ export const METRICS: MetricDef[] = [
     perYear: 365.2425,
     unlockAt: 3,
     customizable: true,
+    perDay: true,
     min: 0,
     max: 5,
   },
@@ -124,6 +128,7 @@ export const METRICS: MetricDef[] = [
     customizable: true,
     min: 0.5,
     max: 24,
+    step: 0.5,
   },
   {
     id: "movies",

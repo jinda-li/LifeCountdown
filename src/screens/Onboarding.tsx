@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BlurFade } from "@/components/ui/BlurFade";
 import { NumberTicker } from "@/components/ui/NumberTicker";
 import { searchCountries, snapshot, type Gender, getCountry } from "@/lib/life";
@@ -386,25 +386,62 @@ function Wheel({
   value: number;
   onChange: (n: number) => void;
 }) {
+  const scroller = useRef<HTMLDivElement>(null);
+  const skip = useRef(false);
+  const settle = useRef(0);
+  const itemH = 40;
+
+  useEffect(() => {
+    if (skip.current) {
+      skip.current = false;
+      return;
+    }
+    const el = scroller.current;
+    if (!el) return;
+    const i = values.indexOf(value);
+    if (i < 0) return;
+    el.scrollTop = i * itemH;
+  }, [value, values.length]);
+
+  useEffect(() => () => window.clearTimeout(settle.current), []);
+
+  const commit = (el: HTMLDivElement) => {
+    const i = Math.max(0, Math.min(values.length - 1, Math.round(el.scrollTop / itemH)));
+    const n = values[i];
+    if (n == null || n === value) return;
+    skip.current = true;
+    onChange(n);
+  };
+
   return (
     <div>
       <div className="mb-1 text-center text-[12px] text-[var(--secondary)]">{label}</div>
-      <div className="h-[196px] overflow-y-auto rounded-[16px] bg-[var(--fill)] py-1">
-        {values.map((n) => (
-          <button
-            key={n}
-            type="button"
-            className={`tap flex h-10 w-full items-center justify-center text-[17px] tabular-nums ${
-              value === n ? "rounded-[12px] bg-[var(--elevated)] font-semibold text-[var(--ink)]" : "text-[var(--secondary)]"
-            }`}
-            onClick={() => {
-              haptic();
-              onChange(n);
-            }}
-          >
-            {n}
-          </button>
-        ))}
+      <div className="wheel">
+        <div className="wheel-window" aria-hidden />
+        <div
+          ref={scroller}
+          className="wheel-col"
+          onScroll={(e) => {
+            const el = e.currentTarget;
+            window.clearTimeout(settle.current);
+            settle.current = window.setTimeout(() => commit(el), 80);
+          }}
+        >
+          {values.map((n) => (
+            <button
+              key={n}
+              type="button"
+              className={`wheel-item tap ${value === n ? "is-on" : ""}`}
+              onClick={() => {
+                haptic();
+                onChange(n);
+                scroller.current?.scrollTo({ top: values.indexOf(n) * itemH, behavior: "smooth" });
+              }}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
