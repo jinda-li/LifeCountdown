@@ -10,8 +10,7 @@ function HoursBlock({ life, live }: { life: LifeSnapshot; live?: boolean }) {
       <div className="font-display text-[52px] font-semibold leading-none tracking-[-0.04em] tabular-nums">
         {live ? formatInt(life.remainingHours) : <NumberTicker value={life.remainingHours} />}
       </div>
-      <div className="mt-2 text-[13px] tracking-[0.18em] text-[var(--secondary)]">小时        小时
-      </div>
+      <div className="unit-label mt-2 text-[13px]">{"小时"}</div>
       <div className="mt-4 flex items-baseline justify-center gap-3 font-display text-[28px] tabular-nums tracking-tight">
         <span>
           {String(life.remainingMinutes).padStart(2, "0")}
@@ -54,10 +53,15 @@ function Progress({ life }: { life: LifeSnapshot }) {
             style={{ width: `${pct}%` }}
           />
         </div>
-        <div className="mt-2 flex justify-between text-[11px] text-[var(--tertiary)]">
-          <span>出生</span>
-          <span>此刻</span>
-          <span>预期</span>
+        <div className="relative mt-2 h-4 text-[11px] text-[var(--tertiary)]">
+          <span className="absolute left-0">出生</span>
+          <span
+            className="absolute -translate-x-1/2"
+            style={{ left: `${Math.min(88, Math.max(12, pct))}%` }}
+          >
+            此刻
+          </span>
+          <span className="absolute right-0">预期</span>
         </div>
       </div>
     </div>
@@ -70,7 +74,7 @@ function Battery({ life }: { life: LifeSnapshot }) {
   const color =
     fill > 45 ? "var(--ok)" : fill > 20 ? "var(--gold)" : "var(--danger)";
   return (
-    <div className="flex flex-col items-center py-2">
+    <div className="flex flex-col items-center py-2 pt-3">
       <div className="flex items-center gap-2">
         <div className="relative h-[148px] w-[78px] rounded-[18px] border-[3px] border-[var(--ink)] p-[5px]">
           <div className="absolute -top-2 left-1/2 h-2 w-8 -translate-x-1/2 rounded-t-md bg-[var(--ink)]" />
@@ -163,7 +167,7 @@ function ClockFace({ life }: { life: LifeSnapshot }) {
       <p className="mt-2 text-[12px] text-[var(--secondary)]">
         生命时钟指向 {hours.toFixed(2)} 点 · 外圈是还没走的路
       </p>
-      <p className="mt-1 font-display text-[20px] tabular-nums">
+      <p className="mt-1 px-2 text-center font-display text-[20px] leading-snug tabular-nums">
         {formatInt(life.remainingHours)} 小时 {String(life.remainingMinutes).padStart(2, "0")} 分
       </p>
     </div>
@@ -197,7 +201,7 @@ function Dots({ life }: { life: LifeSnapshot }) {
       <p className="mt-3 text-center text-[12px] text-[var(--secondary)]">
         一格约 {step} 周 · 已过 {formatInt(livedWeeks)} / {formatInt(totalWeeks)} 周
       </p>
-      <p className="mt-1 text-center font-display text-[18px] tabular-nums">
+      <p className="mt-1 px-2 text-center font-display text-[18px] leading-snug tabular-nums">
         {formatInt(life.remainingHours)} 小时 {String(life.remainingMinutes).padStart(2, "0")}:{String(life.remainingSeconds).padStart(2, "0")}
       </p>
     </div>
@@ -230,8 +234,7 @@ function Ring({ life }: { life: LifeSnapshot }) {
             <div className="font-display text-[28px] font-semibold tabular-nums leading-none">
               {formatInt(life.remainingHours)}
             </div>
-            <div className="mt-1 text-[11px] tracking-[0.16em] text-[var(--secondary)]">小时              小时
-            </div>
+            <div className="unit-label mt-1 text-[11px]">{"小时"}</div>
             <div className="mt-2 text-[13px] tabular-nums text-[var(--secondary)]">
               {String(life.remainingMinutes).padStart(2, "0")} : {String(life.remainingSeconds).padStart(2, "0")}
             </div>

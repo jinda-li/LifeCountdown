@@ -53,14 +53,14 @@ export function HomeScreen() {
 
   return (
     <div className="scroll">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-[13px] tracking-[0.16em] text-[var(--secondary)]">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="truncate text-[13px] tracking-[0.16em] text-[var(--secondary)]">
             {greeting(now)} · {profile.name}
           </p>
           <h1 className="large-title mt-1">此刻</h1>
         </div>
-        <div className="rounded-full bg-[var(--fill)] px-3 py-1 text-[12px] text-[var(--secondary)]">
+        <div className="shrink-0 rounded-full bg-[var(--fill)] px-3 py-1 text-[12px] text-[var(--secondary)]">
           {streak > 0 ? `连续 ${streak} 天 · ` : ""}晨光 {light}
         </div>
       </div>
@@ -99,6 +99,7 @@ export function HomeScreen() {
             </button>
           );
         })}
+        <span className="w-2 shrink-0" aria-hidden />
       </div>
       {skinHint && <p className="mt-2 text-[12px] text-[var(--secondary)]">{skinHint}</p>}
 
@@ -114,14 +115,14 @@ export function HomeScreen() {
           return (
             <button
               key={id}
-              className="card px-4 py-4 text-left"
+              className="card min-w-0 px-4 py-4 text-left"
               onClick={() => useApp.setState({ tab: "me", panel: "metrics" })}
             >
-              <div className="text-[12px] text-[var(--secondary)]">{def.name}</div>
-              <div className="mt-2 font-display text-[22px] font-semibold tabular-nums tracking-tight">
+              <div className="min-w-0 text-[12px] leading-snug text-[var(--secondary)]">{def.name}</div>
+              <div className="mt-2 overflow-hidden font-display text-[22px] font-semibold tabular-nums tracking-tight">
                 {formatInt(value)}
               </div>
-              <div className="mt-1 text-[11px] text-[var(--tertiary)]">{def.unit}</div>
+              <div className="mt-1 truncate text-[11px] text-[var(--tertiary)]">{def.unit}</div>
             </button>
           );
         })}
@@ -136,7 +137,7 @@ export function HomeScreen() {
       </button>
 
       <button
-        className="primary-btn mt-5"
+        className="primary-btn mt-5 leading-snug"
         onClick={() => {
           haptic();
           if (evening && !wrote) setEveningOpen(true);

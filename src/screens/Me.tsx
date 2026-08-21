@@ -71,11 +71,11 @@ export function MeScreen() {
   const days = Object.keys(journals).length;
 
   return (
-    <div className="screen">
+    <>
     <div className="scroll">
       <p className="text-[13px] tracking-[0.16em] text-[var(--secondary)]">YOU</p>
-      <h1 className="large-title mt-1">{profile.name}</h1>
-      <p className="mt-2 text-[15px] text-[var(--secondary)]">
+      <h1 className="large-title mt-1 truncate">{profile.name}</h1>
+      <p className="mt-2 min-w-0 truncate text-[15px] text-[var(--secondary)]">
         {country.nameZh}
         {profile.city ? ` · ${profile.city}` : ""} · {profile.birthISO}
       </p>
@@ -91,10 +91,10 @@ export function MeScreen() {
       </div>
 
       <div className="card mt-3 divide-y divide-[var(--line)] overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3">
-          <div>
+        <div className="flex items-center justify-between gap-3 px-4 py-3">
+          <div className="min-w-0">
             <div className="text-[16px]">每晚提醒</div>
-            <div className="text-[12px] text-[var(--secondary)]">「你今天又过去了一天」</div>
+            <div className="text-[12px] leading-snug text-[var(--secondary)]">「你今天又过去了一天」</div>
           </div>
           <button
             className={`chip ${notifyEnabled ? "on" : ""}`}
@@ -166,21 +166,21 @@ export function MeScreen() {
             return (
               <div key={m.id} className="card px-4 py-3">
                 <button
-                  className="flex w-full items-start justify-between text-left"
+                  className="flex w-full items-start justify-between gap-3 text-left"
                   onClick={() => {
                     haptic();
                     if (locked) unlockWithLight("metric", m.id);
                     else toggleMetric(m.id);
                   }}
                 >
-                  <div>
+                  <div className="min-w-0">
                     <div className="text-[16px]">
                       {locked && <Lock size={12} className="mr-1 inline" />}
                       {m.name}
                     </div>
-                    <div className="mt-1 text-[12px] text-[var(--secondary)]">{m.hint}</div>
+                    <div className="mt-1 text-[12px] leading-snug text-[var(--secondary)]">{m.hint}</div>
                   </div>
-                  <span className={`chip ${on ? "on" : ""}`}>{locked ? "2 晨光" : on ? "显示" : "隐藏"}</span>
+                  <span className={`chip shrink-0 ${on ? "on" : ""}`}>{locked ? "2 晨光" : on ? "显示" : "隐藏"}</span>
                 </button>
                 {m.customizable && !locked && m.min != null && m.max != null && (
                   <div className="mt-3">
@@ -224,18 +224,18 @@ export function MeScreen() {
           return (
             <button
               key={s.id}
-              className="card mb-2 flex w-full items-center justify-between px-4 py-3 text-left"
+              className="card mb-2 flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
               onClick={() => {
                 haptic();
                 if (locked) unlockWithLight("skin", s.id);
                 else setSkin(s.id);
               }}
             >
-              <div>
+              <div className="min-w-0">
                 <div className="text-[16px]">{s.name}{skin === s.id ? " · 使用中" : ""}</div>
-                <div className="text-[12px] text-[var(--secondary)]">{s.blurb}</div>
+                <div className="text-[12px] leading-snug text-[var(--secondary)]">{s.blurb}</div>
               </div>
-              <span className="text-[12px] text-[var(--tertiary)]">
+              <span className="shrink-0 text-right text-[12px] leading-snug text-[var(--tertiary)]">
                 {locked ? `${s.cost} 晨光 / 日记 ${s.unlockAt} 天` : "已解锁"}
               </span>
             </button>
@@ -247,18 +247,18 @@ export function MeScreen() {
           return (
             <button
               key={t.id}
-              className="card mb-2 flex w-full items-center justify-between px-4 py-3 text-left"
+              className="card mb-2 flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
               onClick={() => {
                 haptic();
                 if (locked) unlockWithLight("theme", t.id);
                 else setTheme(t.id);
               }}
             >
-              <div>
+              <div className="min-w-0">
                 <div className="text-[16px]">{t.name}{theme === t.id ? " · 使用中" : ""}</div>
-                <div className="text-[12px] text-[var(--secondary)]">{t.blurb}</div>
+                <div className="text-[12px] leading-snug text-[var(--secondary)]">{t.blurb}</div>
               </div>
-              <span className="text-[12px] text-[var(--tertiary)]">
+              <span className="shrink-0 text-[12px] text-[var(--tertiary)]">
                 {locked ? `${t.cost} 晨光` : "已解锁"}
               </span>
             </button>
@@ -286,15 +286,15 @@ export function MeScreen() {
           留下
         </button>
       </Sheet>
-    </div>
+    </>
   );
 }
 
 function Row({ label, value, onClick }: { label: string; value?: string; onClick: () => void }) {
   return (
-    <button className="flex w-full items-center justify-between px-4 py-3.5 text-left" onClick={onClick}>
-      <span className="text-[16px]">{label}</span>
-      <span className="text-[15px] text-[var(--tertiary)]">{value} ›</span>
+    <button className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left" onClick={onClick}>
+      <span className="min-w-0 shrink-0 text-[16px]">{label}</span>
+      <span className="min-w-0 truncate text-right text-[15px] text-[var(--tertiary)]">{value} ›</span>
     </button>
   );
 }

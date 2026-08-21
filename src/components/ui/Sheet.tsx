@@ -54,8 +54,8 @@ export function Sheet({
                 <div className="sheet-grabber" />
               </div>
               {title && (
-                <div className="flex items-center justify-between px-5 pb-3">
-                  <h2 className="text-[20px] font-semibold tracking-tight">{title}</h2>
+                <div className="flex items-center justify-between gap-3 px-5 pb-3">
+                  <h2 className="min-w-0 truncate text-[20px] font-semibold tracking-tight">{title}</h2>
                   <button
                     type="button"
                     onClick={onClose}

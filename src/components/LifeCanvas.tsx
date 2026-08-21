@@ -11,18 +11,19 @@ export function LifeCanvas({
   lived: number;
   mode: "weeks" | "years";
 }) {
-  const ref = useRef<HTMLCanvasElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = ref.current;
-    if (!canvas) return;
-    const parent = canvas.parentElement;
-    if (!parent) return;
+    const wrap = wrapRef.current;
+    const canvas = canvasRef.current;
+    if (!wrap || !canvas) return;
 
     const paint = () => {
-      const cssW = parent.clientWidth;
-      const gap = mode === "years" ? 6 : 2;
-      const cell = mode === "years" ? Math.max(18, (cssW - gap * (cols - 1)) / cols) : Math.max(3.2, (cssW - gap * (cols - 1)) / cols);
+      const cssW = wrap.clientWidth;
+      if (cssW < 8) return;
+      const gap = mode === "years" ? 5 : 2;
+      const cell = Math.max(1, (cssW - gap * (cols - 1)) / cols);
       const rows = Math.ceil(total / cols);
       const cssH = rows * cell + (rows - 1) * gap;
       const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -38,7 +39,7 @@ export function LifeCanvas({
       const livedColor = styles.getPropertyValue("--lived").trim() || "#cbbba3";
       const remain = styles.getPropertyValue("--remain-dot").trim() || "#e4d9c8";
       const accent = styles.getPropertyValue("--accent").trim() || "#c45c26";
-      const radius = mode === "years" ? 6 : 1.1;
+      const radius = mode === "years" ? Math.min(6, cell / 3) : Math.min(1.2, cell / 3);
       for (let i = 0; i < total; i++) {
         const c = i % cols;
         const r = Math.floor(i / cols);
@@ -52,11 +53,15 @@ export function LifeCanvas({
 
     paint();
     const ro = new ResizeObserver(paint);
-    ro.observe(parent);
+    ro.observe(wrap);
     return () => ro.disconnect();
   }, [cols, total, lived, mode]);
 
-  return <canvas ref={ref} className="block w-full" />;
+  return (
+    <div ref={wrapRef} className="w-full overflow-hidden">
+      <canvas ref={canvasRef} className="block" />
+    </div>
+  );
 }
 
 function roundRect(
